@@ -7,4 +7,8 @@ p card.balance
 # card.top_up(100)
 # p card.balance
 card.deduct(5)
-p card.balance
+card.balance
+card.touch_in
+p card.in_journey?
+p card.touch_out
+p card.in_journey? 

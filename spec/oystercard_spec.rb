@@ -8,7 +8,7 @@ describe OysterCard do
       expect( card.balance ).to eq(0)
     end
 
-    describe 'top up' do
+    describe '#top up' do
       it 'will top up the balance of an oyster card' do
         expect(card).to respond_to(:top_up).with(1).argument
         expect( card.top_up(20) ).to eq(20)
@@ -19,10 +19,28 @@ describe OysterCard do
       end
     end
 
-    describe 'deduct' do
+    describe '#deduct' do
       it 'will deduct an amount from the oyster card balance' do
         expect(card).to respond_to(:deduct).with(1).argument
         expect{ card.deduct(5) }.to change{card.balance}.by -5
+      end
+    end
+  end
+  describe '#touch_in, #touch_out' do
+    describe '#touch_in' do
+      it 'allows a customer to touch in to start journey' do
+        expect(card).to respond_to(:touch_in)
+        card.touch_in
+        expect(card.in_journey?).to be(true)
+      end
+    end 
+
+    describe '#touch_out' do
+      it 'allows a customer to touch out and complete a journey' do
+        expect(card).to respond_to(:touch_out)
+        card.touch_out
+        expect(card.in_journey?).to be(false)
+
       end
     end
   end
