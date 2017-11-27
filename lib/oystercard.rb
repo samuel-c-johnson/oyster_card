@@ -6,12 +6,15 @@ class OysterCard
   CARD_LIMIT = 90
   def initialize
     @balance = 0
-    end
+  end
 
   def top_up(amount)
     raise 'card max of £90 exceeded' if @balance + amount > CARD_LIMIT
     @balance += amount
   end
 
+  def deduct(amount)
+    @balance -= amount
+  end
 
 end
