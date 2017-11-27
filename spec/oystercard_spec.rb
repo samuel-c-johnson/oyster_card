@@ -33,15 +33,29 @@ describe OysterCard do
         card.touch_in
         expect(card.in_journey?).to be(true)
       end
-    end 
+
+      it 'prevents user from touching in when in journey' do
+        card.touch_in
+        expect{card.touch_in}.to raise_error 'You need to touch out before starting new journey'
+      end
+
+    end
 
     describe '#touch_out' do
       it 'allows a customer to touch out and complete a journey' do
         expect(card).to respond_to(:touch_out)
+        card.touch_in
         card.touch_out
         expect(card.in_journey?).to be(false)
-
       end
+
+      it 'prevents user from touching out when they have not touched in' do
+        card.touch_in
+        card.touch_out
+        expect{card.touch_out}.to raise_error 'You need to touch in before ending journey'
+      end
+
+
     end
   end
 end

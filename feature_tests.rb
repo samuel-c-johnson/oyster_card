@@ -10,5 +10,5 @@ card.deduct(5)
 card.balance
 card.touch_in
 p card.in_journey?
-p card.touch_out
-p card.in_journey? 
+p card.touch_in
+# p card.in_journey?

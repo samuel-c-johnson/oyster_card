@@ -2,7 +2,7 @@
 
 class OysterCard
 
-  attr_reader :balance, :in_journey
+  attr_reader :balance
   CARD_LIMIT = 90
 
   def initialize
@@ -20,6 +20,7 @@ class OysterCard
   end
 
   def touch_in
+    raise 'You need to touch out before starting new journey' if @in_journey == true
     @in_journey = true
   end
 
@@ -28,7 +29,8 @@ class OysterCard
   end
 
   def touch_out
+    raise 'You need to touch in before ending journey' if @in_journey == false 
     @in_journey = false
-  end 
+  end
 
 end
