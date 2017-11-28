@@ -4,6 +4,7 @@ class OysterCard
 
   attr_reader :balance
   CARD_LIMIT = 90
+  MINIMUM_BALANCE = 1
 
   def initialize
     @balance = 0
@@ -21,7 +22,7 @@ class OysterCard
 
   def touch_in
     raise 'You need to touch out before starting new journey' if @in_journey == true
-    raise 'Insufficient funds for travel, please top up your card' if @balance < 1
+    raise 'Insufficient funds for travel, please top up your card' if @balance < MINIMUM_BALANCE
     @in_journey = true
   end
 
