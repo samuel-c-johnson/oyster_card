@@ -20,12 +20,7 @@ describe OysterCard do
       end
     end
 
-    describe '#deduct' do
-      it 'will deduct an amount from the oyster card balance' do
-        expect(card).to respond_to(:deduct).with(1).argument
-        expect{ card.deduct(MONEY) }.to change{card.balance}.by -MONEY
-      end
-    end
+    
   end
   describe '#touch_in, #touch_out' do
     describe '#touch_in' do
@@ -55,6 +50,13 @@ describe OysterCard do
         card.touch_out
         expect(card.in_journey?).to be(false)
       end
+
+      it 'charges the user for the journey when they tap out' do
+        card.top_up(MONEY)
+        card.touch_in
+        expect{card.touch_out}.to change {card.balance}.by(-OysterCard::MINIMUM_FARE)
+      end
+
 
       it 'prevents user from touching out when they have not touched in' do
         card.top_up(MONEY)

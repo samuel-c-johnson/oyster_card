@@ -5,6 +5,7 @@ class OysterCard
   attr_reader :balance
   CARD_LIMIT = 90
   MINIMUM_BALANCE = 1
+  MINIMUM_FARE = 1
 
   def initialize
     @balance = 0
@@ -16,9 +17,7 @@ class OysterCard
     @balance += amount
   end
 
-  def deduct(amount)
-    @balance -= amount
-  end
+
 
   def touch_in
     raise 'You need to touch out before starting new journey' if @in_journey == true
@@ -32,7 +31,14 @@ class OysterCard
 
   def touch_out
     raise 'You need to touch in before ending journey' if @in_journey == false
+    @balance -= MINIMUM_FARE
     @in_journey = false
   end
 
+end
+
+private
+
+def deduct(amount)
+  @balance -= amount
 end
