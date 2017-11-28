@@ -2,6 +2,7 @@ require './lib/oystercard.rb'
 
 describe OysterCard do
   subject(:card) { described_class.new }
+  MONEY = 10
 
   describe 'balance' do
     it 'will check that the balance of a new card is 0' do
@@ -11,7 +12,7 @@ describe OysterCard do
     describe '#top up' do
       it 'will top up the balance of an oyster card' do
         expect(card).to respond_to(:top_up).with(1).argument
-        expect( card.top_up(20) ).to eq(20)
+        expect( card.top_up(MONEY) ).to eq(MONEY)
       end
 
       it 'will prevent the card being topped up beyond the max of £90' do
@@ -22,7 +23,7 @@ describe OysterCard do
     describe '#deduct' do
       it 'will deduct an amount from the oyster card balance' do
         expect(card).to respond_to(:deduct).with(1).argument
-        expect{ card.deduct(5) }.to change{card.balance}.by -5
+        expect{ card.deduct(MONEY) }.to change{card.balance}.by -MONEY
       end
     end
   end
@@ -30,26 +31,33 @@ describe OysterCard do
     describe '#touch_in' do
       it 'allows a customer to touch in to start journey' do
         expect(card).to respond_to(:touch_in)
+        card.top_up(MONEY)
         card.touch_in
         expect(card.in_journey?).to be(true)
       end
 
       it 'prevents user from touching in when in journey' do
+        card.top_up(MONEY)
         card.touch_in
         expect{card.touch_in}.to raise_error 'You need to touch out before starting new journey'
       end
 
+      it 'stops tapping in with less than £1 on card' do
+        expect{card.touch_in}.to raise_error 'Insufficient funds for travel, please top up your card'
+      end
     end
 
     describe '#touch_out' do
       it 'allows a customer to touch out and complete a journey' do
         expect(card).to respond_to(:touch_out)
+        card.top_up(MONEY)
         card.touch_in
         card.touch_out
         expect(card.in_journey?).to be(false)
       end
 
       it 'prevents user from touching out when they have not touched in' do
+        card.top_up(MONEY)
         card.touch_in
         card.touch_out
         expect{card.touch_out}.to raise_error 'You need to touch in before ending journey'

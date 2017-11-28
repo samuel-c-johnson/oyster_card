@@ -21,6 +21,7 @@ class OysterCard
 
   def touch_in
     raise 'You need to touch out before starting new journey' if @in_journey == true
+    raise 'Insufficient funds for travel, please top up your card' if @balance < 1
     @in_journey = true
   end
 
@@ -29,7 +30,7 @@ class OysterCard
   end
 
   def touch_out
-    raise 'You need to touch in before ending journey' if @in_journey == false 
+    raise 'You need to touch in before ending journey' if @in_journey == false
     @in_journey = false
   end
 
