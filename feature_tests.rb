@@ -8,10 +8,10 @@ card = OysterCard.new
 # # p card.balance
 # card.deduct()
 # card.balance
- card.touch_in
+ card.touch_in('aldgate')
 # p card.in_journey?
 # p card.touch_in
 # # p card.in_journey?
 # p
-card.touch_out
-p card.balance 
+# card.touch_out
+# card.balance

@@ -20,25 +20,30 @@ describe OysterCard do
       end
     end
 
-    
+
   end
   describe '#touch_in, #touch_out' do
     describe '#touch_in' do
       it 'allows a customer to touch in to start journey' do
         expect(card).to respond_to(:touch_in)
         card.top_up(MONEY)
-        card.touch_in
+        card.touch_in(station)
         expect(card.in_journey?).to be(true)
       end
 
       it 'prevents user from touching in when in journey' do
         card.top_up(MONEY)
-        card.touch_in
+        card.touch_in(station)
         expect{card.touch_in}.to raise_error 'You need to touch out before starting new journey'
       end
 
       it 'stops tapping in with less than £1 on card' do
-        expect{card.touch_in}.to raise_error 'Insufficient funds for travel, please top up your card'
+        expect{card.touch_in(station)}.to raise_error 'Insufficient funds for travel, please top up your card'
+      end
+
+      it 'records the station which the user is travelling from' do
+        card.top_up(MONEY)
+        expect(card).to respond_to(:touch_in).with(1).argument
       end
     end
 
@@ -46,21 +51,21 @@ describe OysterCard do
       it 'allows a customer to touch out and complete a journey' do
         expect(card).to respond_to(:touch_out)
         card.top_up(MONEY)
-        card.touch_in
+        card.touch_in(station)
         card.touch_out
         expect(card.in_journey?).to be(false)
       end
 
       it 'charges the user for the journey when they tap out' do
         card.top_up(MONEY)
-        card.touch_in
+        card.touch_in(station)
         expect{card.touch_out}.to change {card.balance}.by(-OysterCard::MINIMUM_FARE)
       end
 
 
       it 'prevents user from touching out when they have not touched in' do
         card.top_up(MONEY)
-        card.touch_in
+        card.touch_in(station)
         card.touch_out
         expect{card.touch_out}.to raise_error 'You need to touch in before ending journey'
       end
