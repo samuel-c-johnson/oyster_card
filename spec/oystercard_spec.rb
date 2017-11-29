@@ -4,6 +4,12 @@ describe OysterCard do
   subject(:card) { described_class.new }
   let(:station) {double(:my_station)}
   MONEY = 10
+# before do |example|
+#   unless example.metadata[:skip_before]
+#   card.top_up(MONEY)
+#   card.touch_in(station)
+#    end
+#  end
 
   describe 'balance' do
     it 'will check that the balance of a new card is 0' do
@@ -58,26 +64,33 @@ describe OysterCard do
       end
       it 'allows a customer to touch out and complete a journey' do
         expect(card).to respond_to(:touch_out)
-        card.touch_out
+        card.touch_out(station)
         expect(card.in_journey?).to be(false)
       end
 
       it 'charges the user for the journey when they tap out' do
-        expect{card.touch_out}.to change {card.balance}.by(-OysterCard::MINIMUM_FARE)
+        expect{card.touch_out(station)}.to change {card.balance}.by(-OysterCard::MINIMUM_FARE)
       end
 
 
       it 'prevents user from touching out when they have not touched in' do
-        card.touch_out
-        expect{card.touch_out}.to raise_error 'You need to touch in before ending journey'
+        card.touch_out(station)
+        expect{card.touch_out(station)}.to raise_error 'You need to touch in before ending journey'
       end
 
       it 'forgets the entry station on touching out' do
-        card.touch_out
+        card.touch_out(station)
         expect(card.entry_station).to eq(nil)
       end
 
-
+      it 'records journey history' do
+        expect{card.touch_out(station)}.to change{card.journey_history.size}.by(1)
+      end
     end
   end
+
+      it 'checks that the default journey list is 0' do
+        expect(card.journey_history.size).to eq(0)
+  end
+
 end
