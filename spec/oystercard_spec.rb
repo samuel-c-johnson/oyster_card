@@ -2,6 +2,7 @@ require './lib/oystercard.rb'
 
 describe OysterCard do
   subject(:card) { described_class.new }
+  let(:station) {double(:my_station)}
   MONEY = 10
 
   describe 'balance' do
@@ -34,7 +35,7 @@ describe OysterCard do
       it 'prevents user from touching in when in journey' do
         card.top_up(MONEY)
         card.touch_in(station)
-        expect{card.touch_in}.to raise_error 'You need to touch out before starting new journey'
+        expect{card.touch_in(station)}.to raise_error 'You need to touch out before starting new journey'
       end
 
       it 'stops tapping in with less than £1 on card' do
@@ -43,8 +44,11 @@ describe OysterCard do
 
       it 'records the station which the user is travelling from' do
         card.top_up(MONEY)
-        expect(card).to respond_to(:touch_in).with(1).argument
+        card.touch_in(station)
+        expect(card.entry_station).to eq(station)
       end
+
+
     end
 
     describe '#touch_out' do
@@ -68,6 +72,13 @@ describe OysterCard do
         card.touch_in(station)
         card.touch_out
         expect{card.touch_out}.to raise_error 'You need to touch in before ending journey'
+      end
+
+      it 'forgets the entry station on touching out' do
+        card.top_up(MONEY)
+        card.touch_in(station)
+        card.touch_out
+        expect(card.entry_station).to eq(nil)
       end
 
 
