@@ -19,7 +19,18 @@ describe Journey do
     expect(journey).to respond_to(:fare)
   end
 
-  it 'should be able to set journey status to complete' do
+  it 'should determine the correct fare' do
+    journey.start(station)
+    journey.finish(station)
+    expect(journey.fare).to eq Journey::MINIMUM_FARE
+  end
+
+  it 'should charge the pentalty fare for incomplete journeys' do
+    journey.finish(station)
+    expect(journey.fare).to eq Journey::PENALTY_FARE
+  end
+
+  it 'should be able to set journey status to complete for a complete journey'  do
     journey.start(station)
     journey.finish(station)
     expect(journey.complete?).to be true
