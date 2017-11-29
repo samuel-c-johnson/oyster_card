@@ -52,31 +52,27 @@ describe OysterCard do
     end
 
     describe '#touch_out' do
-      it 'allows a customer to touch out and complete a journey' do
-        expect(card).to respond_to(:touch_out)
+      before do
         card.top_up(MONEY)
         card.touch_in(station)
+      end
+      it 'allows a customer to touch out and complete a journey' do
+        expect(card).to respond_to(:touch_out)
         card.touch_out
         expect(card.in_journey?).to be(false)
       end
 
       it 'charges the user for the journey when they tap out' do
-        card.top_up(MONEY)
-        card.touch_in(station)
         expect{card.touch_out}.to change {card.balance}.by(-OysterCard::MINIMUM_FARE)
       end
 
 
       it 'prevents user from touching out when they have not touched in' do
-        card.top_up(MONEY)
-        card.touch_in(station)
         card.touch_out
         expect{card.touch_out}.to raise_error 'You need to touch in before ending journey'
       end
 
       it 'forgets the entry station on touching out' do
-        card.top_up(MONEY)
-        card.touch_in(station)
         card.touch_out
         expect(card.entry_station).to eq(nil)
       end
