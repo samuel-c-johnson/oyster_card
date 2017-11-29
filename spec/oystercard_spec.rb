@@ -2,7 +2,7 @@ require './lib/oystercard.rb'
 
 describe OysterCard do
   subject(:card) { described_class.new }
-  let(:station) {double(:my_station)}
+  let(:station) {double(:my_station, name: 'name')}
   MONEY = 10
 # before do |example|
 #   unless example.metadata[:skip_before]
